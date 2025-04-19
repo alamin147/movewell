@@ -73,14 +73,20 @@ export default function ExercisesPage() {
 
   const nextStep = () => {
     if (currentStep < exerciseSteps.length - 1) {
-      setCurrentStep(currentStep + 1)
+      setCurrentStep(currentStep + 1);
     } else {
       // Complete the exercise
       if (currentExercise) {
-        completeExercise(currentExercise)
+        // Find the full exercise data to pass to completeExercise
+        const exerciseInfo = exerciseData.find(ex => ex.name === currentExercise);
+        if (exerciseInfo) {
+          completeExercise(exerciseInfo);
+        } else {
+          completeExercise(currentExercise);
+        }
       }
-      setIsExercising(false)
-      setCurrentStep(0)
+      setIsExercising(false);
+      setCurrentStep(0);
     }
   }
 

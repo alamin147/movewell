@@ -1,11 +1,12 @@
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
-import { Calendar, ChevronLeft, ChevronRight, Trophy, Users } from "lucide-react"
+import { Calendar, ChevronLeft, ChevronRight, Trophy, Users, Check } from "lucide-react"
 import BottomNavigation from "../components/bottom-navigation"
 import { useExercise } from "../context/exercise-context"
 import ImagePlaceholder from "../components/image-placeholder"
 import { useState } from "react"
+import { format, isToday } from "date-fns"
 
 // Import achievement icons - these should already exist
 import streakIcon from "../assets/icons/streak.svg"
@@ -16,6 +17,11 @@ import earlyAdopterIcon from "../assets/icons/early-adopter.svg"
 export default function StatsPage() {
   const { currentStreak, postureScore, completedExercises, weeklyActivity } = useExercise()
   const [weekOffset, setWeekOffset] = useState(0)
+  
+  // Get today's completed exercises
+  const todayExercises = completedExercises.filter(exercise => 
+    isToday(new Date(exercise.completedAt))
+  );
   
   // Generate dummy users with ImagePlaceholder rather than importing photos
   const leaderboardUsers = [
@@ -30,7 +36,16 @@ export default function StatsPage() {
       rank: index + 1
     }));
   
-  // Get days of the week based on week offset
+  // Format time from ISO string
+  const formatExerciseTime = (isoString) => {
+    try {
+      return format(new Date(isoString), "h:mm a");
+    } catch (e) {
+      return "";
+    }
+  };
+  
+  // Get days of week based on week offset
   const getDaysOfWeek = () => {
     const now = new Date();
     const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, ...
@@ -103,6 +118,30 @@ export default function StatsPage() {
 
         <main className="flex-1 p-4 space-y-6 pb-20">
           <TabsContent value="progress" className="mt-0 space-y-6">
+            {/* New section: Today's Completed Exercises */}
+            {todayExercises.length > 0 && (
+              <section className="space-y-3">
+                <h2 className="text-lg font-medium">Today's Exercises</h2>
+                <Card className="p-4">
+                  <div className="space-y-3">
+                    {todayExercises.map((exercise, i) => (
+                      <div key={i} className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
+                        <div className="flex items-center">
+                          <div className="bg-blue-100 p-1 rounded-full mr-3">
+                            <Check className="h-4 w-4 text-blue-600" />
+                          </div>
+                          <span className="font-medium">{exercise.name}</span>
+                        </div>
+                        <span className="text-sm text-gray-500">
+                          {formatExerciseTime(exercise.completedAt)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </section>
+            )}
+
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-medium">Weekly Summary</h2>
