@@ -1,11 +1,21 @@
-
+import { useNavigate } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { Switch } from "../components/ui/switch"
 import { Bell, ChevronRight, CreditCard, HelpCircle, LogOut, Settings, Shield, User } from "lucide-react"
 import BottomNavigation from "../components/bottom-navigation"
+import { useUser } from "../context/user-context"
+import ImagePlaceholder from "../components/image-placeholder"
 
 export default function ProfilePage() {
+  const { user, logout } = useUser()
+  const navigate = useNavigate()
+  
+  const handleLogout = () => {
+    logout()
+    navigate("/")
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <header className="bg-white p-4 flex items-center justify-between border-b">
@@ -19,11 +29,11 @@ export default function ProfilePage() {
         <Card className="p-4">
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 bg-gray-200 rounded-full overflow-hidden">
-              <img src="/placeholder.svg?height=64&width=64" alt="Profile" className="w-full h-full object-cover" />
+              <ImagePlaceholder width={64} height={64} text="Profile" />
             </div>
             <div>
-              <h2 className="font-bold text-lg">Alex Johnson</h2>
-              <p className="text-gray-500">alex@example.com</p>
+              <h2 className="font-bold text-lg">{user?.name || "User"}</h2>
+              <p className="text-gray-500">{user?.email || "user@example.com"}</p>
             </div>
             <div className="ml-auto">
               <Button variant="outline" size="sm">
@@ -101,10 +111,13 @@ export default function ProfilePage() {
               </div>
 
               <div className="p-4 flex items-center justify-between">
-                <div className="flex items-center">
+                <button 
+                  onClick={handleLogout}
+                  className="flex items-center w-full text-left"
+                >
                   <LogOut className="h-5 w-5 mr-3 text-gray-500" />
                   <span className="text-red-600">Log Out</span>
-                </div>
+                </button>
               </div>
             </div>
           </Card>

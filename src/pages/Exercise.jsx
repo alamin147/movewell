@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
@@ -6,6 +5,8 @@ import { Card } from "../components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { ArrowLeft, Clock, Flame, Play, Pause } from "lucide-react"
 import BottomNavigation from "../components/bottom-navigation"
+import { useExercise } from "../context/exercise-context"
+import ImagePlaceholder from "../components/image-placeholder"
 
 const exerciseSteps = [
   "Stand with your feet shoulder-width apart",
@@ -19,15 +20,25 @@ export default function ExercisesPage() {
   const [activeTab, setActiveTab] = useState("all")
   const [isExercising, setIsExercising] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
+  const [currentExercise, setCurrentExercise] = useState(null)
+  const { completeExercise } = useExercise()
 
-  const toggleExercise = () => {
+  const toggleExercise = (exerciseName) => {
+    if (!isExercising) {
+      setCurrentExercise(exerciseName)
+    }
     setIsExercising(!isExercising)
+    setCurrentStep(0)
   }
 
   const nextStep = () => {
     if (currentStep < exerciseSteps.length - 1) {
       setCurrentStep(currentStep + 1)
     } else {
+      // Complete the exercise
+      if (currentExercise) {
+        completeExercise(currentExercise)
+      }
       setIsExercising(false)
       setCurrentStep(0)
     }
@@ -59,7 +70,7 @@ export default function ExercisesPage() {
           {isExercising ? (
             <Card className="p-6 space-y-6">
               <div className="text-center space-y-2">
-                <h2 className="text-xl font-bold">Posture Correction</h2>
+                <h2 className="text-xl font-bold">{currentExercise}</h2>
                 <p className="text-gray-500">
                   Step {currentStep + 1} of {exerciseSteps.length}
                 </p>
@@ -67,11 +78,7 @@ export default function ExercisesPage() {
 
               <div className="py-6 flex justify-center">
                 <div className="w-48 h-48 bg-gray-100 rounded-full flex items-center justify-center">
-                  <img
-                    src="/placeholder.svg?height=192&width=192"
-                    alt="Exercise demonstration"
-                    className="rounded-full"
-                  />
+                  <ImagePlaceholder width={192} height={192} text="Exercise demo" />
                 </div>
               </div>
 
@@ -80,7 +87,7 @@ export default function ExercisesPage() {
               </div>
 
               <div className="flex space-x-3 pt-4">
-                <Button variant="outline" className="flex-1 py-6" onClick={toggleExercise}>
+                <Button variant="outline" className="flex-1 py-6" onClick={() => toggleExercise()}>
                   <Pause className="mr-2 h-5 w-5" /> Pause
                 </Button>
                 <Button className="flex-1 py-6 bg-blue-600 hover:bg-blue-700" onClick={nextStep}>
@@ -101,11 +108,7 @@ export default function ExercisesPage() {
                   (exercise, index) => (
                     <Card key={index} className="overflow-hidden">
                       <div className="h-40 bg-gray-100">
-                        <img
-                          src={`/placeholder.svg?height=160&width=400`}
-                          alt={exercise}
-                          className="w-full h-full object-cover"
-                        />
+                        <ImagePlaceholder width={400} height={160} text={exercise} />
                       </div>
                       <div className="p-4 space-y-3">
                         <h3 className="font-bold text-lg">{exercise}</h3>
@@ -121,7 +124,10 @@ export default function ExercisesPage() {
                           </div>
                         </div>
 
-                        <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={toggleExercise}>
+                        <Button 
+                          className="w-full bg-blue-600 hover:bg-blue-700" 
+                          onClick={() => toggleExercise(exercise)}
+                        >
                           <Play className="mr-2 h-5 w-5" /> Start Exercise
                         </Button>
                       </div>

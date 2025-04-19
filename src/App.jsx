@@ -10,19 +10,50 @@ import HomePage from './pages/Home'
 import ExercisesPage from './pages/Exercise'
 import StatsPage from './pages/Stats'
 import ProfilePage from './pages/Profile'
+import ProtectedRoute from './components/protected-route'
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<WelcomePage />} />
-        <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/exercises" element={<ExercisesPage />} />
-        <Route path="/stats" element={<StatsPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/onboarding" element={<OnboardingPage />} />
+        
+        {/* Protected Routes */}
+        <Route 
+          path="/home" 
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/exercises" 
+          element={
+            <ProtectedRoute>
+              <ExercisesPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/stats" 
+          element={
+            <ProtectedRoute>
+              <StatsPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/profile" 
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          } 
+        />
       </Routes>
     </Router>
   )

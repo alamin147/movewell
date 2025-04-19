@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { ArrowRight } from "lucide-react"
+import ImagePlaceholder from "../components/image-placeholder"
 
 export default function WelcomePage() {
   return (
@@ -14,11 +15,7 @@ export default function WelcomePage() {
 
           <div className="py-6">
             <div className="w-64 h-64 mx-auto relative">
-              <img
-                src="/placeholder.svg?height=256&width=256"
-                alt="Person with good posture"
-                className="rounded-full object-cover"
-              />
+              <ImagePlaceholder width={256} height={256} text="Person with good posture" />
             </div>
           </div>
 

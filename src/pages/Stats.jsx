@@ -1,11 +1,14 @@
-
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { Award, Calendar, ChevronLeft, ChevronRight, Trophy, Users } from "lucide-react"
 import BottomNavigation from "../components/bottom-navigation"
+import { useExercise } from "../context/exercise-context"
+import ImagePlaceholder from "../components/image-placeholder"
 
 export default function StatsPage() {
+  const { currentStreak, postureScore, completedExercises } = useExercise()
+  
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <header className="bg-white p-4 flex items-center justify-between border-b">
@@ -42,11 +45,11 @@ export default function StatsPage() {
                     <div key={i} className="space-y-2">
                       <div className="text-xs text-gray-500">{day}</div>
                       <div
-                        className={`h-16 rounded-lg flex items-center justify-center ${i < 3 ? "bg-blue-100" : "bg-gray-100"}`}
+                        className={`h-16 rounded-lg flex items-center justify-center ${i < currentStreak ? "bg-blue-100" : "bg-gray-100"}`}
                       >
-                        {i < 3 && <Calendar className="h-5 w-5 text-blue-600" />}
+                        {i < currentStreak && <Calendar className="h-5 w-5 text-blue-600" />}
                       </div>
-                      <div className="text-xs font-medium">{i < 3 ? "Done" : ""}</div>
+                      <div className="text-xs font-medium">{i < currentStreak ? "Done" : ""}</div>
                     </div>
                   ))}
                 </div>
@@ -58,13 +61,25 @@ export default function StatsPage() {
               <div className="grid grid-cols-2 gap-3">
                 {[
                   {
-                    title: "3-Day Streak",
+                    title: `${currentStreak}-Day Streak`,
                     icon: <Trophy className="h-6 w-6 text-yellow-500" />,
                     color: "bg-yellow-100",
                   },
-                  { title: "First Exercise", icon: <Award className="h-6 w-6 text-blue-500" />, color: "bg-blue-100" },
-                  { title: "Posture Pro", icon: <Award className="h-6 w-6 text-purple-500" />, color: "bg-purple-100" },
-                  { title: "Early Adopter", icon: <Award className="h-6 w-6 text-green-500" />, color: "bg-green-100" },
+                  { 
+                    title: completedExercises.length > 0 ? "Exercise Completed" : "First Exercise", 
+                    icon: <Award className="h-6 w-6 text-blue-500" />, 
+                    color: "bg-blue-100" 
+                  },
+                  { 
+                    title: postureScore > 75 ? "Posture Pro" : "Posture Improver", 
+                    icon: <Award className="h-6 w-6 text-purple-500" />, 
+                    color: "bg-purple-100" 
+                  },
+                  { 
+                    title: "Early Adopter", 
+                    icon: <Award className="h-6 w-6 text-green-500" />, 
+                    color: "bg-green-100" 
+                  },
                 ].map((achievement, i) => (
                   <Card key={i} className="p-4">
                     <div className="flex flex-col items-center text-center space-y-2">
@@ -88,7 +103,7 @@ export default function StatsPage() {
 
               <div className="space-y-4">
                 {[
-                  { name: "You", rank: 3, score: 78, days: 3 },
+                  { name: "You", rank: 3, score: postureScore, days: currentStreak },
                   { name: "Sarah K.", rank: 1, score: 95, days: 7 },
                   { name: "Mike T.", rank: 2, score: 82, days: 5 },
                   { name: "Alex W.", rank: 4, score: 65, days: 3 },
@@ -104,7 +119,7 @@ export default function StatsPage() {
                         {user.rank}
                       </div>
                       <div className="w-8 h-8 bg-gray-200 rounded-full ml-2">
-                        <img src={`/placeholder.svg?height=32&width=32`} alt={user.name} className="rounded-full" />
+                        <ImagePlaceholder width={32} height={32} text={user.name} />
                       </div>
                       <div className="ml-3 flex-1">
                         <div className="font-medium">{user.name}</div>

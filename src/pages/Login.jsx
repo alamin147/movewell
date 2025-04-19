@@ -1,10 +1,37 @@
-import { Link } from "react-router-dom"
+import { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { ArrowLeft } from "lucide-react"
+import { useUser } from "../context/user-context"
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const { login } = useUser()
+  const navigate = useNavigate()
+
+  const handleLogin = (e) => {
+    e.preventDefault()
+    setError("")
+    
+    if (!email || !password) {
+      setError("Please enter both email and password")
+      return
+    }
+    
+    // This would normally validate with an API
+    const success = login(email, password)
+    
+    if (success) {
+      navigate("/home")
+    } else {
+      setError("Invalid email or password")
+    }
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <header className="p-4">
@@ -22,10 +49,18 @@ export default function LoginPage() {
             <p className="text-gray-500">Enter your credentials to access your account</p>
           </div>
 
-          <div className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
+            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+            
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="your@email.com" />
+              <Input 
+                id="email" 
+                type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com" 
+              />
             </div>
 
             <div className="space-y-2">
@@ -35,11 +70,16 @@ export default function LoginPage() {
                   Forgot password?
                 </Link>
               </div>
-              <Input id="password" type="password" />
+              <Input 
+                id="password" 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
 
-            <Button className="w-full bg-blue-600 hover:bg-blue-700">Log in</Button>
-          </div>
+            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">Log in</Button>
+          </form>
 
           <div className="text-center">
             <p className="text-sm text-gray-500">
