@@ -6,9 +6,30 @@ import BottomNavigation from "../components/bottom-navigation"
 import { useExercise } from "../context/exercise-context"
 import ImagePlaceholder from "../components/image-placeholder"
 
+// Import profile images
+import avatar1 from "../assets/profiles/avatar1.jpg"
+import avatar2 from "../assets/profiles/avatar2.jpg"
+import avatar3 from "../assets/profiles/avatar3.jpg"
+import avatar4 from "../assets/profiles/avatar4.jpg"
+import userAvatar from "../assets/profiles/user-avatar.jpg"
+
+// Import achievement icons
+import streakIcon from "../assets/icons/streak.svg"
+import postureIcon from "../assets/icons/posture.svg"
+import exerciseIcon from "../assets/icons/exercise.svg"
+import earlyAdopterIcon from "../assets/icons/early-adopter.svg"
+
 export default function StatsPage() {
   const { currentStreak, postureScore, completedExercises } = useExercise()
   
+  const leaderboardUsers = [
+    { name: "You", rank: 3, score: postureScore, days: currentStreak, avatar: userAvatar },
+    { name: "Sarah K.", rank: 1, score: 95, days: 7, avatar: avatar1 },
+    { name: "Mike T.", rank: 2, score: 82, days: 5, avatar: avatar2 },
+    { name: "Alex W.", rank: 4, score: 65, days: 3, avatar: avatar3 },
+    { name: "Jamie L.", rank: 5, score: 60, days: 2, avatar: avatar4 },
+  ].sort((a, b) => a.rank - b.rank);
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <header className="bg-white p-4 flex items-center justify-between border-b">
@@ -62,22 +83,22 @@ export default function StatsPage() {
                 {[
                   {
                     title: `${currentStreak}-Day Streak`,
-                    icon: <Trophy className="h-6 w-6 text-yellow-500" />,
+                    icon: <img src={streakIcon} alt="Streak" className="h-6 w-6" />,
                     color: "bg-yellow-100",
                   },
                   { 
                     title: completedExercises.length > 0 ? "Exercise Completed" : "First Exercise", 
-                    icon: <Award className="h-6 w-6 text-blue-500" />, 
+                    icon: <img src={exerciseIcon} alt="Exercise" className="h-6 w-6" />, 
                     color: "bg-blue-100" 
                   },
                   { 
                     title: postureScore > 75 ? "Posture Pro" : "Posture Improver", 
-                    icon: <Award className="h-6 w-6 text-purple-500" />, 
+                    icon: <img src={postureIcon} alt="Posture" className="h-6 w-6" />, 
                     color: "bg-purple-100" 
                   },
                   { 
                     title: "Early Adopter", 
-                    icon: <Award className="h-6 w-6 text-green-500" />, 
+                    icon: <img src={earlyAdopterIcon} alt="Early Adopter" className="h-6 w-6" />, 
                     color: "bg-green-100" 
                   },
                 ].map((achievement, i) => (
@@ -102,32 +123,29 @@ export default function StatsPage() {
               </div>
 
               <div className="space-y-4">
-                {[
-                  { name: "You", rank: 3, score: postureScore, days: currentStreak },
-                  { name: "Sarah K.", rank: 1, score: 95, days: 7 },
-                  { name: "Mike T.", rank: 2, score: 82, days: 5 },
-                  { name: "Alex W.", rank: 4, score: 65, days: 3 },
-                  { name: "Jamie L.", rank: 5, score: 60, days: 2 },
-                ]
-                  .sort((a, b) => a.rank - b.rank)
-                  .map((user, i) => (
-                    <div
-                      key={i}
-                      className={`flex items-center p-3 rounded-lg ${user.name === "You" ? "bg-blue-50 border border-blue-200" : ""}`}
-                    >
-                      <div className="w-8 h-8 flex items-center justify-center font-bold text-gray-500">
-                        {user.rank}
-                      </div>
-                      <div className="w-8 h-8 bg-gray-200 rounded-full ml-2">
-                        <ImagePlaceholder width={32} height={32} text={user.name} />
-                      </div>
-                      <div className="ml-3 flex-1">
-                        <div className="font-medium">{user.name}</div>
-                        <div className="text-xs text-gray-500">{user.days} day streak</div>
-                      </div>
-                      <div className="font-bold text-blue-600">{user.score}</div>
+                {leaderboardUsers.map((user, i) => (
+                  <div
+                    key={i}
+                    className={`flex items-center p-3 rounded-lg ${user.name === "You" ? "bg-blue-50 border border-blue-200" : ""}`}
+                  >
+                    <div className="w-8 h-8 flex items-center justify-center font-bold text-gray-500">
+                      {user.rank}
                     </div>
-                  ))}
+                    <div className="w-8 h-8 bg-gray-200 rounded-full ml-2 overflow-hidden">
+                      <ImagePlaceholder 
+                        width={32} 
+                        height={32} 
+                        text={user.name} 
+                        imageSrc={user.avatar}
+                      />
+                    </div>
+                    <div className="ml-3 flex-1">
+                      <div className="font-medium">{user.name}</div>
+                      <div className="text-xs text-gray-500">{user.days} day streak</div>
+                    </div>
+                    <div className="font-bold text-blue-600">{user.score}</div>
+                  </div>
+                ))}
               </div>
             </Card>
 

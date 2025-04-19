@@ -3,6 +3,9 @@ import { Button } from "../components/ui/button"
 import { ArrowRight } from "lucide-react"
 import ImagePlaceholder from "../components/image-placeholder"
 
+// Import welcome image
+import welcomeImage from "../assets/onboarding/posture-analysis.jpg"
+
 export default function WelcomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -14,8 +17,12 @@ export default function WelcomePage() {
           </div>
 
           <div className="py-6">
-            <div className="w-64 h-64 mx-auto relative">
-              <ImagePlaceholder width={256} height={256} text="Person with good posture" />
+            <div className="w-64 h-64 mx-auto relative rounded-lg overflow-hidden">
+              <img 
+                src={welcomeImage} 
+                alt="Person with good posture" 
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
 

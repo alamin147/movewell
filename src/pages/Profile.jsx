@@ -7,6 +7,9 @@ import BottomNavigation from "../components/bottom-navigation"
 import { useUser } from "../context/user-context"
 import ImagePlaceholder from "../components/image-placeholder"
 
+// Import user avatar
+import userAvatar from "../assets/profiles/user-avatar.jpg"
+
 export default function ProfilePage() {
   const { user, logout } = useUser()
   const navigate = useNavigate()
@@ -29,7 +32,12 @@ export default function ProfilePage() {
         <Card className="p-4">
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 bg-gray-200 rounded-full overflow-hidden">
-              <ImagePlaceholder width={64} height={64} text="Profile" />
+              <ImagePlaceholder 
+                width={64} 
+                height={64} 
+                text="Profile" 
+                imageSrc={userAvatar}
+              />
             </div>
             <div>
               <h2 className="font-bold text-lg">{user?.name || "User"}</h2>

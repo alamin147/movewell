@@ -1,25 +1,32 @@
-
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { cn } from "../lib/utils"
 
+// Import onboarding images
+import postureAnalysisImg from "../assets/onboarding/posture-analysis.jpg"
+import guidedExerciseImg from "../assets/onboarding/guided-exercise.jpg"
+import progressTrackingImg from "../assets/onboarding/progress-tracking.jpg"
+
 const onboardingSteps = [
   {
     title: "AI Posture Analysis",
     description: "Our AI technology analyzes your posture in real-time and provides personalized feedback.",
     icon: "📊",
+    image: postureAnalysisImg
   },
   {
     title: "Guided Exercises",
     description: "Follow our expert-designed exercises to strengthen your back and improve posture.",
     icon: "💪",
+    image: guidedExerciseImg
   },
   {
     title: "Track Your Progress",
     description: "Earn rewards and compete with friends as you build healthy habits.",
     icon: "🏆",
+    image: progressTrackingImg
   },
 ]
 
@@ -56,7 +63,13 @@ export default function OnboardingPage() {
 
       <main className="flex-1 flex flex-col items-center justify-between p-6">
         <div className="w-full max-w-md flex flex-col items-center text-center space-y-8">
-          <div className="text-6xl">{onboardingSteps[currentStep].icon}</div>
+          <div className="w-64 h-64 rounded-lg overflow-hidden">
+            <img 
+              src={onboardingSteps[currentStep].image} 
+              alt={onboardingSteps[currentStep].title}
+              className="w-full h-full object-cover" 
+            />
+          </div>
 
           <div className="space-y-3">
             <h1 className="text-2xl font-bold text-gray-900">{onboardingSteps[currentStep].title}</h1>

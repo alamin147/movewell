@@ -7,8 +7,19 @@ import BottomNavigation from "../components/bottom-navigation"
 import { useExercise } from "../context/exercise-context"
 import ImagePlaceholder from "../components/image-placeholder"
 
+// Import exercise images
+import neckStretchImg from "../assets/exercises/neck-stretch.jpg"
+import backStretchImg from "../assets/exercises/back-stretch.jpg"
+import shoulderMobilityImg from "../assets/exercises/shoulder-mobility.jpg"
+
 export default function HomePage() {
   const { postureScore, currentStreak } = useExercise()
+
+  const recommendedExercises = [
+    { name: "Neck Stretches", image: neckStretchImg, duration: "5 min", level: "Beginner" },
+    { name: "Lower Back Relief", image: backStretchImg, duration: "7 min", level: "Beginner" },
+    { name: "Shoulder Mobility", image: shoulderMobilityImg, duration: "5 min", level: "Beginner" },
+  ];
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -71,15 +82,20 @@ export default function HomePage() {
         <section className="space-y-2">
           <h2 className="text-lg font-medium text-gray-900">Recommended Exercises</h2>
           <div className="space-y-3">
-            {["Neck Stretches", "Lower Back Relief", "Shoulder Mobility"].map((exercise, index) => (
+            {recommendedExercises.map((exercise, index) => (
               <Card key={index} className="p-4">
                 <div className="flex items-center space-x-4">
-                  <div className="bg-gray-100 rounded-lg h-14 w-14 flex items-center justify-center">
-                    <ImagePlaceholder width={56} height={56} text={exercise} />
+                  <div className="bg-gray-100 rounded-lg h-14 w-14 flex items-center justify-center overflow-hidden">
+                    <ImagePlaceholder 
+                      width={56} 
+                      height={56} 
+                      text={exercise.name}
+                      imageSrc={exercise.image} 
+                    />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-medium">{exercise}</h3>
-                    <p className="text-sm text-gray-500">5 min • Beginner</p>
+                    <h3 className="font-medium">{exercise.name}</h3>
+                    <p className="text-sm text-gray-500">{exercise.duration} • {exercise.level}</p>
                   </div>
                   <Link to="/exercises">
                     <Button size="icon" variant="ghost" className="text-blue-600">

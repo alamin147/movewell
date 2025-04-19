@@ -8,12 +8,52 @@ import BottomNavigation from "../components/bottom-navigation"
 import { useExercise } from "../context/exercise-context"
 import ImagePlaceholder from "../components/image-placeholder"
 
+// Import exercise images
+import neckStretchImg from "../assets/exercises/neck-stretch.jpg"
+import backStretchImg from "../assets/exercises/back-stretch.jpg"
+import shoulderMobilityImg from "../assets/exercises/shoulder-mobility.jpg"
+import postureCorrectionImg from "../assets/exercises/posture-correction.jpg"
+import deskStretchImg from "../assets/exercises/desk-stretch.jpg"
+
 const exerciseSteps = [
   "Stand with your feet shoulder-width apart",
   "Slowly roll your shoulders back and down",
   "Gently tuck your chin in",
   "Hold this position for 10 seconds",
   "Relax and repeat 5 times",
+]
+
+const exerciseData = [
+  {
+    name: "Posture Correction",
+    image: postureCorrectionImg,
+    duration: "5 min",
+    level: "Beginner"
+  },
+  {
+    name: "Neck Relief",
+    image: neckStretchImg,
+    duration: "3 min",
+    level: "Beginner"
+  },
+  {
+    name: "Lower Back Stretch",
+    image: backStretchImg,
+    duration: "7 min",
+    level: "Intermediate"
+  },
+  {
+    name: "Shoulder Mobility",
+    image: shoulderMobilityImg,
+    duration: "5 min",
+    level: "Beginner"
+  },
+  {
+    name: "Desk Stretches",
+    image: deskStretchImg,
+    duration: "4 min",
+    level: "Beginner"
+  }
 ]
 
 export default function ExercisesPage() {
@@ -42,6 +82,12 @@ export default function ExercisesPage() {
       setIsExercising(false)
       setCurrentStep(0)
     }
+  }
+
+  // Find the current exercise data
+  const getCurrentExerciseImage = () => {
+    const exerciseItem = exerciseData.find(ex => ex.name === currentExercise);
+    return exerciseItem ? exerciseItem.image : null;
   }
 
   return (
@@ -77,8 +123,13 @@ export default function ExercisesPage() {
               </div>
 
               <div className="py-6 flex justify-center">
-                <div className="w-48 h-48 bg-gray-100 rounded-full flex items-center justify-center">
-                  <ImagePlaceholder width={192} height={192} text="Exercise demo" />
+                <div className="w-48 h-48 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
+                  <ImagePlaceholder 
+                    width={192} 
+                    height={192} 
+                    text="Exercise demo" 
+                    imageSrc={getCurrentExerciseImage()}
+                  />
                 </div>
               </div>
 
@@ -104,36 +155,39 @@ export default function ExercisesPage() {
           ) : (
             <TabsContent value={activeTab} className="mt-0">
               <div className="space-y-4">
-                {["Posture Correction", "Neck Relief", "Lower Back Stretch", "Shoulder Mobility", "Desk Stretches"].map(
-                  (exercise, index) => (
-                    <Card key={index} className="overflow-hidden">
-                      <div className="h-40 bg-gray-100">
-                        <ImagePlaceholder width={400} height={160} text={exercise} />
-                      </div>
-                      <div className="p-4 space-y-3">
-                        <h3 className="font-bold text-lg">{exercise}</h3>
+                {exerciseData.map((exercise, index) => (
+                  <Card key={index} className="overflow-hidden">
+                    <div className="h-40 bg-gray-100">
+                      <ImagePlaceholder 
+                        width={400} 
+                        height={160} 
+                        text={exercise.name} 
+                        imageSrc={exercise.image}
+                      />
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <h3 className="font-bold text-lg">{exercise.name}</h3>
 
-                        <div className="flex space-x-4 text-sm text-gray-500">
-                          <div className="flex items-center">
-                            <Clock className="h-4 w-4 mr-1" />
-                            <span>5 min</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Flame className="h-4 w-4 mr-1" />
-                            <span>Beginner</span>
-                          </div>
+                      <div className="flex space-x-4 text-sm text-gray-500">
+                        <div className="flex items-center">
+                          <Clock className="h-4 w-4 mr-1" />
+                          <span>{exercise.duration}</span>
                         </div>
-
-                        <Button 
-                          className="w-full bg-blue-600 hover:bg-blue-700" 
-                          onClick={() => toggleExercise(exercise)}
-                        >
-                          <Play className="mr-2 h-5 w-5" /> Start Exercise
-                        </Button>
+                        <div className="flex items-center">
+                          <Flame className="h-4 w-4 mr-1" />
+                          <span>{exercise.level}</span>
+                        </div>
                       </div>
-                    </Card>
-                  ),
-                )}
+
+                      <Button 
+                        className="w-full bg-blue-600 hover:bg-blue-700" 
+                        onClick={() => toggleExercise(exercise.name)}
+                      >
+                        <Play className="mr-2 h-5 w-5" /> Start Exercise
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
               </div>
             </TabsContent>
           )}

@@ -1,4 +1,8 @@
-export default function ImagePlaceholder({ width, height, text }) {
+import { useState } from "react"
+
+export default function ImagePlaceholder({ width, height, text, imageSrc }) {
+  const [imageError, setImageError] = useState(false)
+  
   const style = {
     width: `${width}px` || '100%',
     height: `${height}px` || '100%',
@@ -10,6 +14,20 @@ export default function ImagePlaceholder({ width, height, text }) {
     fontSize: '0.875rem',
     fontWeight: 500,
     borderRadius: '0.5rem',
+    overflow: 'hidden',
+  }
+
+  if (imageSrc && !imageError) {
+    return (
+      <div style={style}>
+        <img 
+          src={imageSrc} 
+          alt={text || 'Image'} 
+          style={{width: '100%', height: '100%', objectFit: 'cover'}}
+          onError={() => setImageError(true)}
+        />
+      </div>
+    )
   }
 
   return (
