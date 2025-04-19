@@ -1,34 +1,91 @@
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
-import { Award, Calendar, ChevronLeft, ChevronRight, Trophy, Users } from "lucide-react"
+import { Calendar, ChevronLeft, ChevronRight, Trophy, Users } from "lucide-react"
 import BottomNavigation from "../components/bottom-navigation"
 import { useExercise } from "../context/exercise-context"
 import ImagePlaceholder from "../components/image-placeholder"
+import { useState } from "react"
 
-// Import profile images
-import avatar1 from "../assets/profiles/avatar1.jpg"
-import avatar2 from "../assets/profiles/avatar2.jpg"
-import avatar3 from "../assets/profiles/avatar3.jpg"
-import avatar4 from "../assets/profiles/avatar4.jpg"
-import userAvatar from "../assets/profiles/user-avatar.jpg"
-
-// Import achievement icons
+// Import achievement icons - these should already exist
 import streakIcon from "../assets/icons/streak.svg"
 import postureIcon from "../assets/icons/posture.svg"
 import exerciseIcon from "../assets/icons/exercise.svg"
 import earlyAdopterIcon from "../assets/icons/early-adopter.svg"
 
 export default function StatsPage() {
-  const { currentStreak, postureScore, completedExercises } = useExercise()
+  const { currentStreak, postureScore, completedExercises, weeklyActivity } = useExercise()
+  const [weekOffset, setWeekOffset] = useState(0)
   
+  // Generate dummy users with ImagePlaceholder rather than importing photos
   const leaderboardUsers = [
-    { name: "You", rank: 3, score: postureScore, days: currentStreak, avatar: userAvatar },
-    { name: "Sarah K.", rank: 1, score: 95, days: 7, avatar: avatar1 },
-    { name: "Mike T.", rank: 2, score: 82, days: 5, avatar: avatar2 },
-    { name: "Alex W.", rank: 4, score: 65, days: 3, avatar: avatar3 },
-    { name: "Jamie L.", rank: 5, score: 60, days: 2, avatar: avatar4 },
-  ].sort((a, b) => a.rank - b.rank);
+    { name: "Sarah K.", score: 95, days: 7 },
+    { name: "Mike T.", score: 82, days: 5 },
+    { name: "You", score: postureScore, days: currentStreak },
+    { name: "Alex W.", score: 65, days: 3 },
+    { name: "Jamie L.", score: 60, days: 2 },
+  ].sort((a, b) => b.score - a.score)
+    .map((user, index) => ({
+      ...user,
+      rank: index + 1
+    }));
+  
+  // Get days of the week based on week offset
+  const getDaysOfWeek = () => {
+    const now = new Date();
+    const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, ...
+    
+    // Start from last Sunday
+    const startDate = new Date(now);
+    startDate.setDate(now.getDate() - currentDay - (weekOffset * 7));
+    
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      days.push({
+        day: ['S', 'M', 'T', 'W', 'T', 'F', 'S'][i],
+        date: date,
+        // If current week (offset=0), use weeklyActivity, otherwise simulate data
+        active: weekOffset === 0 ? weeklyActivity[i] : Math.random() > 0.5 ? 1 : 0
+      });
+    }
+    
+    return days;
+  }
+  
+  const daysOfWeek = getDaysOfWeek();
+  
+  // Week navigation
+  const prevWeek = () => {
+    setWeekOffset(weekOffset + 1);
+  }
+  
+  const nextWeek = () => {
+    if (weekOffset > 0) {
+      setWeekOffset(weekOffset - 1);
+    }
+  }
+  
+  // Format week display text
+  const getWeekText = () => {
+    if (weekOffset === 0) return "This Week";
+    if (weekOffset === 1) return "Last Week";
+    return `${weekOffset} Weeks Ago`;
+  }
+  
+  // Challenge progress calculations
+  const getStreakProgress = () => {
+    return Math.min(currentStreak / 7 * 100, 100);
+  }
+  
+  const getPostureProgress = () => {
+    return postureScore;
+  }
+  
+  const getExerciseProgress = () => {
+    return Math.min(completedExercises.length / 10 * 100, 100);
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -50,11 +107,17 @@ export default function StatsPage() {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-medium">Weekly Summary</h2>
                 <div className="flex items-center space-x-2">
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={prevWeek}>
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
-                  <span className="text-sm">This Week</span>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <span className="text-sm">{getWeekText()}</span>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8" 
+                    onClick={nextWeek}
+                    disabled={weekOffset === 0}
+                  >
                     <ChevronRight className="h-4 w-4" />
                   </Button>
                 </div>
@@ -62,15 +125,15 @@ export default function StatsPage() {
 
               <Card className="p-4">
                 <div className="grid grid-cols-7 gap-2 text-center">
-                  {["M", "T", "W", "T", "F", "S", "S"].map((day, i) => (
+                  {daysOfWeek.map((day, i) => (
                     <div key={i} className="space-y-2">
-                      <div className="text-xs text-gray-500">{day}</div>
+                      <div className="text-xs text-gray-500">{day.day}</div>
                       <div
-                        className={`h-16 rounded-lg flex items-center justify-center ${i < currentStreak ? "bg-blue-100" : "bg-gray-100"}`}
+                        className={`h-16 rounded-lg flex items-center justify-center ${day.active ? "bg-blue-100" : "bg-gray-100"}`}
                       >
-                        {i < currentStreak && <Calendar className="h-5 w-5 text-blue-600" />}
+                        {day.active ? <Calendar className="h-5 w-5 text-blue-600" /> : null}
                       </div>
-                      <div className="text-xs font-medium">{i < currentStreak ? "Done" : ""}</div>
+                      <div className="text-xs font-medium">{day.active ? "Done" : ""}</div>
                     </div>
                   ))}
                 </div>
@@ -85,24 +148,28 @@ export default function StatsPage() {
                     title: `${currentStreak}-Day Streak`,
                     icon: <img src={streakIcon} alt="Streak" className="h-6 w-6" />,
                     color: "bg-yellow-100",
+                    earned: currentStreak > 0
                   },
                   { 
                     title: completedExercises.length > 0 ? "Exercise Completed" : "First Exercise", 
                     icon: <img src={exerciseIcon} alt="Exercise" className="h-6 w-6" />, 
-                    color: "bg-blue-100" 
+                    color: "bg-blue-100",
+                    earned: completedExercises.length > 0
                   },
                   { 
                     title: postureScore > 75 ? "Posture Pro" : "Posture Improver", 
                     icon: <img src={postureIcon} alt="Posture" className="h-6 w-6" />, 
-                    color: "bg-purple-100" 
+                    color: "bg-purple-100",
+                    earned: postureScore > 60
                   },
                   { 
                     title: "Early Adopter", 
                     icon: <img src={earlyAdopterIcon} alt="Early Adopter" className="h-6 w-6" />, 
-                    color: "bg-green-100" 
+                    color: "bg-green-100",
+                    earned: true
                   },
                 ].map((achievement, i) => (
-                  <Card key={i} className="p-4">
+                  <Card key={i} className={`p-4 ${!achievement.earned ? 'opacity-50' : ''}`}>
                     <div className="flex flex-col items-center text-center space-y-2">
                       <div className={`${achievement.color} p-3 rounded-full`}>{achievement.icon}</div>
                       <h3 className="font-medium text-sm">{achievement.title}</h3>
@@ -135,8 +202,7 @@ export default function StatsPage() {
                       <ImagePlaceholder 
                         width={32} 
                         height={32} 
-                        text={user.name} 
-                        imageSrc={user.avatar}
+                        text={user.name}
                       />
                     </div>
                     <div className="ml-3 flex-1">
@@ -153,9 +219,9 @@ export default function StatsPage() {
               <h2 className="font-bold mb-4">Challenges</h2>
               <div className="space-y-4">
                 {[
-                  { title: "7-Day Streak", progress: 43, reward: "Gold Badge" },
-                  { title: "Perfect Posture", progress: 65, reward: "Silver Badge" },
-                  { title: "Exercise Master", progress: 20, reward: "Bronze Badge" },
+                  { title: "7-Day Streak", progress: getStreakProgress(), reward: "Gold Badge" },
+                  { title: "Perfect Posture", progress: getPostureProgress(), reward: "Silver Badge" },
+                  { title: "Exercise Master", progress: getExerciseProgress(), reward: "Bronze Badge" },
                 ].map((challenge, i) => (
                   <div key={i} className="space-y-2">
                     <div className="flex justify-between">
@@ -168,7 +234,7 @@ export default function StatsPage() {
                         style={{ width: `${challenge.progress}%` }}
                       ></div>
                     </div>
-                    <div className="text-xs text-right text-gray-500">{challenge.progress}% complete</div>
+                    <div className="text-xs text-right text-gray-500">{Math.round(challenge.progress)}% complete</div>
                   </div>
                 ))}
               </div>
