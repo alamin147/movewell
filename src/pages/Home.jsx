@@ -2,12 +2,29 @@ import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { Progress } from "../components/ui/progress"
-import { Bell, Calendar, Info, MapPin, Play, User, X } from "lucide-react"
+import { 
+  AlertTriangle, 
+  Bell, 
+  Calendar, 
+  Info, 
+  MapPin, 
+  Play, 
+  User, 
+  X 
+} from "lucide-react"
 import BottomNavigation from "../components/bottom-navigation"
 import { useExercise } from "../context/exercise-context"
 import ImagePlaceholder from "../components/image-placeholder"
 import { useState } from "react"
 import NearbyHealthLocations from "../components/nearby-health-locations"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "../components/ui/dialog"
 
 // Import exercise images
 import neckStretchImg from "../assets/exercises/neck-stretch.jpg"
@@ -17,6 +34,18 @@ import shoulderMobilityImg from "../assets/exercises/shoulder-mobility.jpg"
 export default function HomePage() {
   const { postureScore, currentStreak } = useExercise()
   const [showNotifications, setShowNotifications] = useState(false)
+  const [showEmergencyModal, setShowEmergencyModal] = useState(false)
+  const [sendingAlert, setSendingAlert] = useState(false)
+
+  const handleEmergencyAlert = async () => {
+    setSendingAlert(true)
+    // Simulate sending notifications to contacts
+    setTimeout(() => {
+      setSendingAlert(false)
+      setShowEmergencyModal(false)
+      // You could show a toast notification here that contacts were alerted
+    }, 2000)
+  }
 
   const recommendedExercises = [
     { name: "Neck Stretches", image: neckStretchImg, duration: "5 min", level: "Beginner" },
@@ -94,10 +123,52 @@ export default function HomePage() {
         <section className="space-y-2">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-medium text-gray-900">Posture Analysis</h2>
-            <Button variant="ghost" size="sm" className="h-8 text-blue-600">
-              <Info className="h-4 w-4 mr-1" /> How it works
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-8 text-white bg-red-500 hover:bg-red-600"
+              onClick={() => setShowEmergencyModal(true)}
+            >
+              <AlertTriangle className="h-4 w-4 mr-1" />Emergency Alert
             </Button>
           </div>
+          
+          {/* Emergency Alert Dialog */}
+          <Dialog open={showEmergencyModal} onOpenChange={setShowEmergencyModal}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center text-red-600">
+                  <AlertTriangle className="h-5 w-5 mr-2" />
+                  Emergency Alert
+                </DialogTitle>
+                <DialogDescription>
+                  This will notify your emergency contacts that you are in a critical situation and need immediate assistance.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="p-4 bg-red-50 rounded-md border border-red-200 my-4">
+                <p className="text-sm text-red-700">
+                  Your selected emergency contacts will receive your current location and an SOS message.
+                </p>
+              </div>
+              <DialogFooter className="sm:justify-between flex-row">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowEmergencyModal(false)}
+                  disabled={sendingAlert}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={handleEmergencyAlert}
+                  disabled={sendingAlert}
+                  className={"bg-red-600 text-white"}
+                >
+                  {sendingAlert ? "Sending Alert..." : "Send Emergency Alert"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
           <Card className="p-4 space-y-4">
             <div className="flex items-center justify-between">
