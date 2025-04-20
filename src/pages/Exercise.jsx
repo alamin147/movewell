@@ -11,21 +11,8 @@ import ImagePlaceholder from "../components/image-placeholder"
 // Import exercise data
 import exerciseDataFile from "../data/exercises.json"
 
-// Import exercise images (we still need these for dynamic loading)
-import neckStretchImg from "../assets/exercises/neck-stretch.jpg"
-import backStretchImg from "../assets/exercises/back-stretch.jpg"
-import shoulderMobilityImg from "../assets/exercises/shoulder-mobility.jpg"
-import postureCorrectionImg from "../assets/exercises/posture-correction.jpg"
-import deskStretchImg from "../assets/exercises/desk-stretch.jpg"
-
-// Create an image map for easier access
-const imageMap = {
-  "/src/assets/exercises/neck-stretch.jpg": neckStretchImg,
-  "/src/assets/exercises/back-stretch.jpg": backStretchImg,
-  "/src/assets/exercises/shoulder-mobility.jpg": shoulderMobilityImg,
-  "/src/assets/exercises/posture-correction.jpg": postureCorrectionImg,
-  "/src/assets/exercises/desk-stretch.jpg": deskStretchImg,
-}
+// Remove direct imports of images that don't exist
+// Instead, we'll use a dynamic approach that doesn't require importing files that might not exist
 
 export default function ExercisesPage() {
   const [activeTab, setActiveTab] = useState("all")
@@ -36,10 +23,10 @@ export default function ExercisesPage() {
   const [exerciseData, setExerciseData] = useState([])
 
   useEffect(() => {
-    // Load and process exercise data
+    // Load exercise data without relying on image imports
     const loadedData = exerciseDataFile.exercises.map(exercise => ({
       ...exercise,
-      image: imageMap[exercise.imagePath] // Replace path with actual image
+      // Keep the imagePath for reference - we'll use this directly in ImagePlaceholder
     }));
     setExerciseData(loadedData);
   }, []);
@@ -114,8 +101,8 @@ export default function ExercisesPage() {
                   <ImagePlaceholder 
                     width={192} 
                     height={192} 
-                    text="Exercise demo" 
-                    imageSrc={currentExercise.image}
+                    text={currentExercise.name}
+                    // Just pass the exercise name as the text for now
                   />
                 </div>
               </div>
@@ -154,7 +141,7 @@ export default function ExercisesPage() {
                           width={400} 
                           height={160} 
                           text={exercise.name} 
-                          imageSrc={exercise.image}
+                          // Just use the exercise name as text instead of trying to load images
                         />
                       </div>
                       <div className="p-4 space-y-3">
