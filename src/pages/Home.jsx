@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { Progress } from "../components/ui/progress"
-import { Bell, Calendar, Info, Play } from "lucide-react"
+import { Bell, Calendar, Info, Play, User } from "lucide-react"
 import BottomNavigation from "../components/bottom-navigation"
 import { useExercise } from "../context/exercise-context"
 import ImagePlaceholder from "../components/image-placeholder"
@@ -25,9 +25,16 @@ export default function HomePage() {
     <div className="flex flex-col min-h-screen bg-gray-50">
       <header className="bg-white p-4 flex items-center justify-between border-b">
         <h1 className="text-xl font-bold text-blue-600">MoveWell</h1>
-        <Button variant="ghost" size="icon">
-          <Bell className="h-5 w-5" />
-        </Button>
+        <div className="flex items-center space-x-3">
+          <Button variant="ghost" size="icon">
+            <Bell className="h-5 w-5" />
+          </Button>
+          <Link to="/profile">
+            <Button variant="ghost" size="icon">
+              <User className="h-5 w-5" />
+            </Button>
+          </Link>
+        </div>
       </header>
 
       <main className="flex-1 p-4 space-y-6 pb-20">
