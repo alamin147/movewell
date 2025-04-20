@@ -129,6 +129,12 @@ export function ExerciseProvider({ children }) {
     setPostureScore(prev => Math.min(prev + Math.floor(Math.random() * 5) + 1, 100));
   };
 
+  // New method to update posture score
+  const updatePostureScore = (adjustment) => {
+    // Clamp values between 0 and 100
+    setPostureScore(prev => Math.max(0, Math.min(100, prev + adjustment)));
+  };
+
   return (
     <ExerciseContext.Provider
       value={{
@@ -136,7 +142,8 @@ export function ExerciseProvider({ children }) {
         completeExercise,
         currentStreak,
         postureScore,
-        weeklyActivity
+        weeklyActivity,
+        updatePostureScore
       }}
     >
       {children}

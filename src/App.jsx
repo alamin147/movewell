@@ -11,6 +11,8 @@ import ExercisesPage from './pages/Exercise'
 import DoctorsPage from './pages/Doctors'
 import StatsPage from './pages/Stats'
 import ProfilePage from './pages/Profile'
+import LivePosturePage from './pages/LivePosture'
+import AiChatPage from './pages/AiChat'
 import ProtectedRoute from './components/protected-route'
 import { AppointmentProvider } from './context/appointment-context'
 
@@ -62,6 +64,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <ProfilePage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/posture" 
+            element={
+              <ProtectedRoute>
+                <LivePosturePage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/chat" 
+            element={
+              <ProtectedRoute>
+                <AiChatPage />
               </ProtectedRoute>
             } 
           />
