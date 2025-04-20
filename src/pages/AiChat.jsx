@@ -2,10 +2,11 @@ import { useState, useRef, useEffect } from "react"
 import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
 import { Card } from "../components/ui/card"
-import { SendHorizontal, Bot, User, ChevronDown, Loader2 } from "lucide-react"
+import { SendHorizontal, Bot, User, Loader2 } from "lucide-react"
 import BottomNavigation from "../components/bottom-navigation"
+import { sendMessageToGemini, clearChatHistory } from "../services/gemini-api"
 
-// Mock conversation starters
+// Conversation starters focused on posture and ergonomics
 const CONVERSATION_STARTERS = [
   "How can I improve my posture?",
   "What exercises help with lower back pain?",
@@ -13,35 +14,24 @@ const CONVERSATION_STARTERS = [
   "What are signs of poor ergonomics?"
 ];
 
-// Mock responses
-const BOT_RESPONSES = {
-  "How can I improve my posture?": 
-    "To improve your posture, try these tips:\n\n• Keep your shoulders back and relaxed\n• Pull in your abdomen\n• Keep your feet flat on the floor\n• Take regular breaks from sitting\n• Consider ergonomic furniture\n• Practice posture-strengthening exercises like planks and wall stands",
-  
-  "What exercises help with lower back pain?": 
-    "For lower back pain, these exercises can help:\n\n• Gentle stretches like child's pose and cat-cow\n• Pelvic tilts to strengthen your core\n• Knee-to-chest stretches\n• Walking and swimming for low-impact movement\n• Strengthening exercises for your back muscles\n\nAlways start gently and consult with a healthcare provider if you have severe pain.",
-  
-  "How often should I take breaks when sitting?": 
-    "It's recommended to take a short break every 30 minutes when sitting for long periods. Even a 1-2 minute break to stand up, stretch, or walk around can make a significant difference.\n\nConsider using the 20-20-20 rule: every 20 minutes, look at something 20 feet away for 20 seconds to reduce eye strain as well.",
-  
-  "What are signs of poor ergonomics?": 
-    "Signs of poor ergonomics include:\n\n• Frequent discomfort or pain in your neck, shoulders, or back\n• Tingling or numbness in hands or wrists\n• Headaches, especially in the afternoon\n• Eye strain or blurred vision\n• Feeling stiff after sitting\n• Reduced productivity due to discomfort\n\nIf you experience these regularly, consider evaluating your workspace setup.",
-};
-
-// Default response for unknown queries
-const DEFAULT_RESPONSE = "I'm here to help with posture and ergonomics questions. Could you rephrase your question, or try one of the suggested topics below?";
-
 export default function AiChatPage() {
   const [messages, setMessages] = useState([
     {
       id: 1,
       role: "assistant",
-      content: "Hi there! I'm your MoveWell AI assistant. How can I help you with your posture and ergonomics today?"
+      content: "Hi there! I'm your MoveWell AI assistant powered by Gemini. How can I help you with your posture and ergonomics today?"
     }
   ])
   const [input, setInput] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef(null)
+
+  // Reset chat history when component unmounts
+  useEffect(() => {
+    return () => {
+      clearChatHistory();
+    };
+  }, []);
 
   // Auto scroll to bottom of messages
   const scrollToBottom = () => {
@@ -53,7 +43,7 @@ export default function AiChatPage() {
   }, [messages])
 
   // Send message handler
-  const handleSendMessage = (content = input) => {
+  const handleSendMessage = async (content = input) => {
     if (!content.trim()) return
 
     // Add user message
@@ -67,29 +57,25 @@ export default function AiChatPage() {
     setInput("")
     setIsTyping(true)
 
-    // Simulate AI response delay
-    setTimeout(() => {
-      let botResponse = ""
-      
-      // Check for match in predefined responses
-      Object.keys(BOT_RESPONSES).forEach(key => {
-        if (content.toLowerCase().includes(key.toLowerCase())) {
-          botResponse = BOT_RESPONSES[key]
-        }
-      })
-      
-      // Use default if no match
-      if (!botResponse) {
-        botResponse = DEFAULT_RESPONSE
-      }
+    try {
+      // Call Gemini API
+      const response = await sendMessageToGemini(content);
       
       setMessages(prev => [...prev, {
         id: Date.now(),
         role: "assistant",
-        content: botResponse
-      }])
-      setIsTyping(false)
-    }, 1500)
+        content: response
+      }]);
+    } catch (error) {
+      console.error("Error sending message to Gemini:", error);
+      setMessages(prev => [...prev, {
+        id: Date.now(),
+        role: "assistant",
+        content: "I'm having trouble processing your request. Please try again later."
+      }]);
+    } finally {
+      setIsTyping(false);
+    }
   }
 
   return (
@@ -170,7 +156,7 @@ export default function AiChatPage() {
           <Button 
             className="ml-2 bg-blue-600 hover:bg-blue-700"
             onClick={() => handleSendMessage()}
-            disabled={!input.trim()}
+            disabled={!input.trim() || isTyping}
           >
             <SendHorizontal className="h-5 w-5" />
           </Button>
