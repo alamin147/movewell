@@ -77,16 +77,18 @@ export default function ExercisesPage() {
     } else {
       // Complete the exercise
       if (currentExercise) {
-        // Find the full exercise data to pass to completeExercise
-        const exerciseInfo = exerciseData.find(ex => ex.name === currentExercise);
-        if (exerciseInfo) {
-          completeExercise(exerciseInfo);
+        // Find the full exercise data
+        const exercise = exerciseData.find(ex => ex.name === currentExercise);
+        if (exercise) {
+          completeExercise(exercise);
         } else {
-          completeExercise(currentExercise);
+          completeExercise({ name: currentExercise });
         }
       }
+      // Reset the exercise state
       setIsExercising(false);
       setCurrentStep(0);
+      setCurrentExercise(null);
     }
   }
 
@@ -144,7 +146,7 @@ export default function ExercisesPage() {
               </div>
 
               <div className="flex space-x-3 pt-4">
-                <Button variant="outline" className="flex-1 py-6" onClick={() => toggleExercise()}>
+                <Button variant="outline" className="flex-1 py-6" onClick={() => setIsExercising(false)}>
                   <Pause className="mr-2 h-5 w-5" /> Pause
                 </Button>
                 <Button className="flex-1 py-6 bg-blue-600 hover:bg-blue-700" onClick={nextStep}>
