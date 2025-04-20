@@ -36,6 +36,11 @@ export default function HomePage() {
   const [showNotifications, setShowNotifications] = useState(false)
   const [showEmergencyModal, setShowEmergencyModal] = useState(false)
   const [sendingAlert, setSendingAlert] = useState(false)
+  const [notifications, setNotifications] = useState([
+    { id: 1, text: "You've completed your daily posture check", time: "Just now" },
+    { id: 2, text: "Remember to take a break and stretch", time: "1 hour ago" },
+    { id: 3, text: "New exercise routine available", time: "Yesterday" }
+  ]);
 
   const handleEmergencyAlert = async () => {
     setSendingAlert(true)
@@ -43,7 +48,23 @@ export default function HomePage() {
     setTimeout(() => {
       setSendingAlert(false)
       setShowEmergencyModal(false)
-      // You could show a toast notification here that contacts were alerted
+      
+      // Add emergency notification to the top of the list
+      const emergencyNotification = {
+        id: Date.now(), // Unique ID using timestamp
+        text: "Emergency contacts notified with your location",
+        time: "Just now",
+        emergency: true // Flag to style it differently if needed
+      };
+      
+      setNotifications(prevNotifications => [
+        emergencyNotification,
+        ...prevNotifications
+      ]);
+      
+      // Optionally show notifications panel
+      setShowNotifications(true);
+      
     }, 2000)
   }
 
@@ -51,13 +72,6 @@ export default function HomePage() {
     { name: "Neck Stretches", image: neckStretchImg, duration: "5 min", level: "Beginner" },
     { name: "Lower Back Relief", image: backStretchImg, duration: "7 min", level: "Beginner" },
     { name: "Shoulder Mobility", image: shoulderMobilityImg, duration: "5 min", level: "Beginner" },
-  ];
-
-  // Sample notifications
-  const notifications = [
-    { id: 1, text: "You've completed your daily posture check", time: "Just now" },
-    { id: 2, text: "Remember to take a break and stretch", time: "1 hour ago" },
-    { id: 3, text: "New exercise routine available", time: "Yesterday" }
   ];
 
   return (
