@@ -2,20 +2,32 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { Switch } from "../components/ui/switch"
-import { Bell, ChevronRight, CreditCard, HelpCircle, LogOut, Settings, Shield, User } from "lucide-react"
+import { Bell, ChevronRight, CreditCard, HelpCircle, LogOut, Settings, Shield, User, Phone, X, PhoneCall } from "lucide-react"
 import BottomNavigation from "../components/bottom-navigation"
 import { useUser } from "../context/user-context"
 import ImagePlaceholder from "../components/image-placeholder"
 import EditProfile from "../components/edit-profile"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 // Import user avatar
 import userAvatar from "../assets/profiles/user-avatar.jpg"
+
+// Import emergency contacts data
+import emergencyContactsData from "../data/emergency-contacts.json"
 
 export default function ProfilePage() {
   const { user, logout, updateUser } = useUser()
   const navigate = useNavigate()
   const [showEditProfile, setShowEditProfile] = useState(false)
+  const [showEmergencyContactModal, setShowEmergencyContactModal] = useState(false)
+  
+  // Load emergency contacts from JSON file
+  const [emergencyContacts, setEmergencyContacts] = useState([])
+  
+  // Load contacts from JSON when component mounts
+  useEffect(() => {
+    setEmergencyContacts(emergencyContactsData.contacts)
+  }, [])
   
   const handleLogout = () => {
     logout()
@@ -27,6 +39,12 @@ export default function ProfilePage() {
     if (success) {
       setShowEditProfile(false)
     }
+  }
+
+  const handleCall = (phoneNumber) => {
+    // In a real app, this would initiate a call
+    // For a web app, we can use tel: protocol
+    window.location.href = `tel:${phoneNumber}`
   }
 
   return (
@@ -128,6 +146,48 @@ export default function ProfilePage() {
           </Card>
         </section>
 
+        {/* Emergency Contacts Section */}
+        <section className="space-y-2">
+          <h2 className="text-lg font-medium px-1">Emergency Contacts</h2>
+          <Card>
+            <div className="divide-y">
+              {emergencyContacts.slice(0, 2).map(contact => (
+                <div key={contact.id} className="p-4 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Phone className="h-5 w-5 mr-3 text-gray-500" />
+                    <div>
+                      <div>{contact.name}</div>
+                      <div className="text-sm text-gray-500">{contact.relationship}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="text-sm text-blue-600 mr-2">{contact.phone}</div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-8 w-8 p-0 text-green-600 hover:text-green-800 hover:bg-green-50"
+                      onClick={() => handleCall(contact.phone.replace(/\D/g, ''))}
+                    >
+                      <PhoneCall className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              <div className="p-4 flex items-center justify-between">
+                <span>View All Emergency Contacts</span>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8"
+                  onClick={() => setShowEmergencyContactModal(true)}
+                >
+                  <ChevronRight className="h-5 w-5 text-gray-400" />
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </section>
+
         <section className="space-y-2">
           <h2 className="text-lg font-medium px-1">Support</h2>
           <Card>
@@ -158,6 +218,49 @@ export default function ProfilePage() {
           <p>© 2025 MoveWell Health Technologies</p>
         </div>
       </main>
+
+      {/* Emergency Contact Modal */}
+      {showEmergencyContactModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg w-full max-w-md max-h-[80vh] overflow-y-auto">
+            <div className="p-4 border-b sticky top-0 bg-white flex justify-between items-center">
+              <h3 className="text-lg font-medium">Emergency Contacts</h3>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0"
+                onClick={() => setShowEmergencyContactModal(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            
+            <div className="p-4 space-y-4">
+              {emergencyContacts.map(contact => (
+                <div key={contact.id} className="flex items-center justify-between bg-gray-50 p-3 rounded-md">
+                  <div>
+                    <h4 className="font-medium">{contact.name}</h4>
+                    <p className="text-sm text-gray-500">{contact.relationship}</p>
+                    <p className="text-sm text-blue-600">{contact.phone}</p>
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-8 w-8 p-0 text-green-600 hover:text-green-800 hover:bg-green-50"
+                    onClick={() => handleCall(contact.phone.replace(/\D/g, ''))}
+                  >
+                    <PhoneCall className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              
+              {/* <Button className="w-full mt-2 bg-blue-600 hover:bg-blue-700">
+                <Plus className="h-4 w-4 mr-2" /> Add New Contact
+              </Button> */}
+            </div>
+          </div>
+        </div>
+      )}
 
       <BottomNavigation currentPath="/profile" />
     </div>

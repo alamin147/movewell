@@ -1,0 +1,22 @@
+{
+  "contacts": [
+    {
+      "id": 1,
+      "name": "Sarah Johnson",
+      "relationship": "Spouse",
+      "phone": "+1 (555) 123-4567"
+    },
+    {
+      "id": 2,
+      "name": "Michael Brown",
+      "relationship": "Doctor",
+      "phone": "+1 (555) 987-6543"
+    },
+    {
+      "id": 3,
+      "name": "Emily Davis",
+      "relationship": "Parent",
+      "phone": "+1 (555) 456-7890"
+    }
+  ]
+}
