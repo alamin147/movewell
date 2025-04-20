@@ -23,7 +23,12 @@ export default function ImagePlaceholder({ width, height, text, imageSrc }) {
         <img 
           src={imageSrc} 
           alt={text || 'Image'} 
-          style={{width: '100%', height: '100%', objectFit: 'cover'}}
+          style={{
+            width: '100%', 
+            height: '100%', 
+            objectFit: 'cover',
+            objectPosition: 'center'
+          }}
           onError={() => setImageError(true)}
         />
       </div>

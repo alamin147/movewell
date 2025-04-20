@@ -14,6 +14,18 @@ import { Link } from "react-router-dom"
 // Import doctors data from JSON file
 import doctorsData from "../data/doctors.json"
 
+// Import doctor profile images
+import drSarahImg from "../assets/doctors/doc-1.jpeg"
+import drMichaelImg from "../assets/doctors/doc-2.jpeg"
+import drEmilyImg from "../assets/doctors/doc-3.jpeg"
+
+// Create an image map for the doctors
+const doctorImageMap = {
+  1: drSarahImg,
+  2: drMichaelImg,
+  3: drEmilyImg
+}
+
 export default function DoctorsPage() {
   const [selectedDoctor, setSelectedDoctor] = useState(null)
   const [selectedDate, setSelectedDate] = useState("")
@@ -29,7 +41,12 @@ export default function DoctorsPage() {
   
   // Load doctors from JSON when component mounts
   useEffect(() => {
-    setDoctors(doctorsData.doctors)
+    // Add profile images to the doctors data
+    const doctorsWithImages = doctorsData.doctors.map(doctor => ({
+      ...doctor,
+      profileImage: doctorImageMap[doctor.id]
+    }));
+    setDoctors(doctorsWithImages);
   }, [])
 
   // Check if appointment is happening now (for demo purposes, consider any appointment from today as "now")
@@ -46,6 +63,7 @@ export default function DoctorsPage() {
     const appointment = {
       doctorId: selectedDoctor.id,
       doctorName: selectedDoctor.name,
+      doctorImage: selectedDoctor.profileImage,
       date: selectedDate,
       time: selectedTime,
       notes: notes
@@ -110,6 +128,7 @@ export default function DoctorsPage() {
                 width={800} 
                 height={600} 
                 text={currentCall.doctorName} 
+                imageSrc={currentCall.doctorImage}
               />
             </div>
           </div>
@@ -184,6 +203,7 @@ export default function DoctorsPage() {
                     width={48} 
                     height={48} 
                     text={selectedDoctor?.name} 
+                    imageSrc={selectedDoctor?.profileImage}
                   />
                 </div>
                 <div>
@@ -258,6 +278,7 @@ export default function DoctorsPage() {
                             width={48} 
                             height={48} 
                             text={appointment.doctorName} 
+                            imageSrc={appointment.doctorImage || doctorImageMap[appointment.doctorId]}
                           />
                         </div>
                         <div className="flex-1">
@@ -305,6 +326,7 @@ export default function DoctorsPage() {
                           width={56} 
                           height={56} 
                           text={doctor.name} 
+                          imageSrc={doctor.profileImage}
                         />
                       </div>
                       <div className="flex-1">
