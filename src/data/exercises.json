@@ -1,0 +1,79 @@
+{
+  "exercises": [
+    {
+      "id": 1,
+      "name": "Posture Correction",
+      "imagePath": "/src/assets/exercises/posture-correction.jpg",
+      "duration": "5 min",
+      "level": "Beginner",
+      "category": "back",
+      "steps": [
+        "Stand with your feet shoulder-width apart",
+        "Slowly roll your shoulders back and down",
+        "Gently tuck your chin in",
+        "Hold this position for 10 seconds",
+        "Relax and repeat 5 times"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Neck Relief",
+      "imagePath": "/src/assets/exercises/neck-stretch.jpg",
+      "duration": "3 min",
+      "level": "Beginner",
+      "category": "neck",
+      "steps": [
+        "Sit upright with your shoulders relaxed",
+        "Gently tilt your right ear toward your right shoulder",
+        "Hold for 15-30 seconds, feeling the stretch on the left side",
+        "Return to center and repeat on the left side",
+        "Do 3 repetitions on each side"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Lower Back Stretch",
+      "imagePath": "/src/assets/exercises/back-stretch.jpg",
+      "duration": "7 min",
+      "level": "Intermediate",
+      "category": "back",
+      "steps": [
+        "Lie on your back with knees bent and feet flat on the floor",
+        "Cross your right leg over your left thigh",
+        "Gently pull your left thigh toward your chest",
+        "Hold for 30 seconds and feel the stretch in your lower back",
+        "Switch sides and repeat 3 times per side"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Shoulder Mobility",
+      "imagePath": "/src/assets/exercises/shoulder-mobility.jpg",
+      "duration": "5 min",
+      "level": "Beginner",
+      "category": "neck",
+      "steps": [
+        "Stand with feet shoulder-width apart",
+        "Extend your arms to the sides at shoulder height",
+        "Rotate your arms in small circles forward for 30 seconds",
+        "Rotate your arms in small circles backward for 30 seconds",
+        "Repeat 2 more times in each direction"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Desk Stretches",
+      "imagePath": "/src/assets/exercises/desk-stretch.jpg",
+      "duration": "4 min",
+      "level": "Beginner",
+      "category": "back",
+      "steps": [
+        "While seated, extend your arms overhead and reach as high as possible",
+        "Interlace your fingers and turn palms upward",
+        "Hold for 15 seconds while breathing deeply",
+        "Release and roll shoulders backward 5 times",
+        "Repeat sequence 3 times"
+      ]
+    }
+  ]
+}

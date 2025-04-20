@@ -1,5 +1,4 @@
 # React + Vite
 # Features to add
-    - gemini api
-    - 
-    
+    - emergency contact
+    - nearby health location
