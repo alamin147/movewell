@@ -11,8 +11,24 @@ import ImagePlaceholder from "../components/image-placeholder"
 // Import exercise data
 import exerciseDataFile from "../data/exercises.json"
 
-// Remove direct imports of images that don't exist
-// Instead, we'll use a dynamic approach that doesn't require importing files that might not exist
+// Import exercise images
+import postureCorrectionImg from "../assets/exercises/download.jpeg"
+
+import deskStretchImg from "../assets/exercises/download-1.jpeg"
+
+
+import neckStretchImg from "../assets/exercises/neck-stretch.jpg"
+import backStretchImg from "../assets/exercises/back-stretch.jpg"
+import shoulderMobilityImg from "../assets/exercises/shoulder-mobility.jpg"
+
+// Create an image map using imported local images
+const imageMap = {
+  "/src/assets/exercises/posture-correction.jpg": postureCorrectionImg,
+  "/src/assets/exercises/neck-stretch.jpg": neckStretchImg,
+  "/src/assets/exercises/back-stretch.jpg": backStretchImg,
+  "/src/assets/exercises/shoulder-mobility.jpg": shoulderMobilityImg,
+  "/src/assets/exercises/desk-stretch.jpg": deskStretchImg
+}
 
 export default function ExercisesPage() {
   const [activeTab, setActiveTab] = useState("all")
@@ -23,10 +39,10 @@ export default function ExercisesPage() {
   const [exerciseData, setExerciseData] = useState([])
 
   useEffect(() => {
-    // Load exercise data without relying on image imports
+    // Load exercise data with local images
     const loadedData = exerciseDataFile.exercises.map(exercise => ({
       ...exercise,
-      // Keep the imagePath for reference - we'll use this directly in ImagePlaceholder
+      image: imageMap[exercise.imagePath] // Map the path to the local image
     }));
     setExerciseData(loadedData);
   }, []);
@@ -102,7 +118,7 @@ export default function ExercisesPage() {
                     width={192} 
                     height={192} 
                     text={currentExercise.name}
-                    // Just pass the exercise name as the text for now
+                    imageSrc={currentExercise.image} 
                   />
                 </div>
               </div>
@@ -141,7 +157,7 @@ export default function ExercisesPage() {
                           width={400} 
                           height={160} 
                           text={exercise.name} 
-                          // Just use the exercise name as text instead of trying to load images
+                          imageSrc={exercise.image}
                         />
                       </div>
                       <div className="p-4 space-y-3">
