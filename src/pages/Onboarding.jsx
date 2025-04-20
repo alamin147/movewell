@@ -4,29 +4,24 @@ import { Button } from "../components/ui/button"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { cn } from "../lib/utils"
 
-// Import onboarding images
-import postureAnalysisImg from "../assets/onboarding/posture-analysis.jpg"
-import guidedExerciseImg from "../assets/onboarding/guided-exercise.jpg"
-import progressTrackingImg from "../assets/onboarding/progress-tracking.jpg"
+// Import logo asset instead of individual onboarding images
+// import logoImg from "../assets/logo/movewell-logo.svg" // You'll need to create/add this logo file
 
 const onboardingSteps = [
   {
     title: "AI Posture Analysis",
     description: "Our AI technology analyzes your posture in real-time and provides personalized feedback.",
-    icon: "📊",
-    image: postureAnalysisImg
+    icon: "📊"
   },
   {
     title: "Guided Exercises",
     description: "Follow our expert-designed exercises to strengthen your back and improve posture.",
-    icon: "💪",
-    image: guidedExerciseImg
+    icon: "💪"
   },
   {
     title: "Track Your Progress",
     description: "Earn rewards and compete with friends as you build healthy habits.",
-    icon: "🏆",
-    image: progressTrackingImg
+    icon: "🏆"
   },
 ]
 
@@ -63,17 +58,19 @@ export default function OnboardingPage() {
 
       <main className="flex-1 flex flex-col items-center justify-between p-6">
         <div className="w-full max-w-md flex flex-col items-center text-center space-y-8">
-          <div className="w-64 h-64 rounded-lg overflow-hidden">
-            <img 
-              src={onboardingSteps[currentStep].image} 
-              alt={onboardingSteps[currentStep].title}
-              className="w-full h-full object-cover" 
-            />
-          </div>
+          {/* Logo instead of step images */}
+          {/* <div className="w-32 h-32"> */}
+            {/* <img 
+              src={logoImg} 
+              alt="MoveWell Logo" 
+              className="w-full h-full object-contain" 
+            /> */}
+          {/* </div> */}
 
           <div className="space-y-3">
             <h1 className="text-2xl font-bold text-gray-900">{onboardingSteps[currentStep].title}</h1>
             <p className="text-gray-600">{onboardingSteps[currentStep].description}</p>
+            <div className="text-5xl pt-3">{onboardingSteps[currentStep].icon}</div>
           </div>
 
           <div className="flex space-x-2 pt-6">
