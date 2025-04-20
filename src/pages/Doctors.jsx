@@ -3,11 +3,13 @@ import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
-import { CalendarIcon, Clock, Video, X } from "lucide-react"
+import { CalendarIcon, Clock, Video, X, Phone } from "lucide-react"
+// import { Mic, Video } from "lucide-react"
 import BottomNavigation from "../components/bottom-navigation"
 import ImagePlaceholder from "../components/image-placeholder"
 import { useAppointments } from "../context/appointment-context"
 import { format } from "date-fns"
+import { Link } from "react-router-dom"
 
 // Define doctors with name info that will be used by ImagePlaceholder
 const doctors = [
@@ -37,7 +39,15 @@ export default function DoctorsPage() {
   const [selectedTime, setSelectedTime] = useState("")
   const [showBookingForm, setShowBookingForm] = useState(false)
   const [notes, setNotes] = useState("")
+  const [showVideoCall, setShowVideoCall] = useState(false)
+  const [currentCall, setCurrentCall] = useState(null)
   const { appointments, bookAppointment, removeAppointment } = useAppointments()
+
+  // Check if appointment is happening now (for demo purposes, consider any appointment from today as "now")
+  const isAppointmentNow = (appointment) => {
+    const today = new Date().toISOString().split('T')[0];
+    return appointment.date === today;
+  };
 
   const handleBookAppointment = () => {
     if (!selectedDoctor || !selectedDate || !selectedTime) {
@@ -78,6 +88,85 @@ export default function DoctorsPage() {
     setSelectedDoctor(doctor);
     setShowBookingForm(true);
   };
+
+  const startVideoCall = (appointment) => {
+    setCurrentCall(appointment);
+    setShowVideoCall(true);
+  };
+
+  const endVideoCall = () => {
+    setShowVideoCall(false);
+    setCurrentCall(null);
+  };
+
+  if (showVideoCall && currentCall) {
+    return (
+      <div className="flex flex-col h-screen bg-gray-900">
+        {/* Header */}
+        <header className="bg-gray-800 p-4 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-white">
+            Call with {currentCall.doctorName}
+          </h1>
+          <div className="text-white bg-gray-700 px-2 py-1 rounded text-sm">
+            00:05:32
+          </div>
+        </header>
+
+        {/* Main video area */}
+        <main className="flex-1 relative">
+          {/* Doctor video (large) */}
+          <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center">
+              <ImagePlaceholder 
+                width={800} 
+                height={600} 
+                text={currentCall.doctorName} 
+              />
+            </div>
+          </div>
+          
+          {/* User video (small overlay) */}
+          <div className="absolute bottom-4 right-4 w-32 h-48 bg-gray-700 rounded-lg overflow-hidden border-2 border-gray-600 shadow-lg">
+            <ImagePlaceholder 
+              width={128} 
+              height={192} 
+              text="You" 
+            />
+          </div>
+        </main>
+
+        {/* Controls */}
+        <footer className="bg-gray-800 p-4">
+          <div className="flex items-center justify-center space-x-4">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full p-3 h-14 w-14 bg-gray-700 hover:bg-gray-600"
+            >
+              <Mic className="h-6 w-6 text-white" />
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full p-3 h-14 w-14 bg-gray-700 hover:bg-gray-600"
+            >
+              <Video className="h-6 w-6 text-white" />
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full p-3 h-14 w-14 bg-red-600 hover:bg-red-700"
+              onClick={endVideoCall}
+            >
+              <Phone className="h-6 w-6 text-white" />
+            </Button>
+          </div>
+        </footer>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -158,7 +247,7 @@ export default function DoctorsPage() {
                 onClick={handleBookAppointment}
                 disabled={!selectedDate || !selectedTime}
               >
-                Book Video Consultation
+                <Video className="h-5 w-5 mr-2" /> Book Video Consultation
               </Button>
             </div>
           </Card>
@@ -189,14 +278,26 @@ export default function DoctorsPage() {
                             {formatAppointmentDate(appointment.date)} at {appointment.time}
                           </div>
                         </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className="flex items-center"
-                          onClick={() => removeAppointment(appointment.id)}
-                        >
-                          Cancel
-                        </Button>
+                        <div className="flex space-x-2">
+                          {isAppointmentNow(appointment) && (
+                            <Button 
+                              variant="default" 
+                              size="sm"
+                              className="flex items-center bg-green-600 hover:bg-green-700"
+                              onClick={() => startVideoCall(appointment)}
+                            >
+                              <Phone className="h-3 w-3 mr-1" /> Join Call
+                            </Button>
+                          )}
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            className="flex items-center"
+                            onClick={() => removeAppointment(appointment.id)}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
                       </div>
                     </Card>
                   ))}

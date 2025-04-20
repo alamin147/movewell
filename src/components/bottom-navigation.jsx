@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { BarChart2, Home, Play, User, Video, MessageSquare, Activity } from "lucide-react"
+import { Home, Play, User, Video, MessageSquare, Activity } from "lucide-react"
 
 export default function BottomNavigation({ currentPath }) {
   const navItems = [
@@ -22,6 +22,11 @@ export default function BottomNavigation({ currentPath }) {
       label: "Chat",
       href: "/chat",
       icon: MessageSquare,
+    },
+    {
+      label: "Doctors",
+      href: "/doctors",
+      icon: Video,
     },
     {
       label: "Profile",
