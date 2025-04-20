@@ -2,10 +2,11 @@ import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { Progress } from "../components/ui/progress"
-import { Bell, Calendar, Info, Play, User } from "lucide-react"
+import { Bell, Calendar, Info, Play, User, X } from "lucide-react"
 import BottomNavigation from "../components/bottom-navigation"
 import { useExercise } from "../context/exercise-context"
 import ImagePlaceholder from "../components/image-placeholder"
+import { useState } from "react"
 
 // Import exercise images
 import neckStretchImg from "../assets/exercises/neck-stretch.jpg"
@@ -14,6 +15,7 @@ import shoulderMobilityImg from "../assets/exercises/shoulder-mobility.jpg"
 
 export default function HomePage() {
   const { postureScore, currentStreak } = useExercise()
+  const [showNotifications, setShowNotifications] = useState(false)
 
   const recommendedExercises = [
     { name: "Neck Stretches", image: neckStretchImg, duration: "5 min", level: "Beginner" },
@@ -21,14 +23,64 @@ export default function HomePage() {
     { name: "Shoulder Mobility", image: shoulderMobilityImg, duration: "5 min", level: "Beginner" },
   ];
 
+  // Sample notifications
+  const notifications = [
+    { id: 1, text: "You've completed your daily posture check", time: "Just now" },
+    { id: 2, text: "Remember to take a break and stretch", time: "1 hour ago" },
+    { id: 3, text: "New exercise routine available", time: "Yesterday" }
+  ];
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <header className="bg-white p-4 flex items-center justify-between border-b">
+      <header className="bg-white p-4 flex items-center justify-between border-b relative">
         <h1 className="text-xl font-bold text-blue-600">MoveWell</h1>
         <div className="flex items-center space-x-3">
-          <Button variant="ghost" size="icon">
-            <Bell className="h-5 w-5" />
-          </Button>
+          <div className="relative">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => setShowNotifications(!showNotifications)}
+            >
+              <Bell className="h-5 w-5" />
+              <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
+            </Button>
+            
+            {showNotifications && (
+              <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg z-10 border">
+                <div className="p-3 border-b flex justify-between items-center">
+                  <h3 className="font-medium">Notifications</h3>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-6 w-6 p-0" 
+                    onClick={() => setShowNotifications(false)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="max-h-96 overflow-y-auto">
+                  {notifications.length > 0 ? (
+                    notifications.map(notification => (
+                      <div key={notification.id} className="p-3 border-b hover:bg-gray-50 cursor-pointer">
+                        <p className="text-sm">{notification.text}</p>
+                        <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-4 text-center text-gray-500">
+                      No notifications
+                    </div>
+                  )}
+                </div>
+                <div className="p-2 text-center border-t">
+                  <Button variant="link" size="sm" className="text-blue-600 text-xs">
+                    Clear all notifications
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+          
           <Link to="/profile">
             <Button variant="ghost" size="icon">
               <User className="h-5 w-5" />
