@@ -7,6 +7,7 @@ import { useExercise } from "../context/exercise-context"
 import ImagePlaceholder from "../components/image-placeholder"
 import { useState } from "react"
 import { format, isToday } from "date-fns"
+import TodayExerciseChart from "../components/today-exercise-chart" // Import the new component
 
 // Import achievement icons - these should already exist
 import streakIcon from "../assets/icons/streak.svg"
@@ -177,6 +178,12 @@ export default function StatsPage() {
                   ))}
                 </div>
               </Card>
+            </section>
+
+            {/* New section: Today's Exercise Chart */}
+            <section className="space-y-3">
+              <h2 className="text-lg font-medium">Exercise Analytics</h2>
+              <TodayExerciseChart completedExercises={completedExercises} />
             </section>
 
             <section className="space-y-3">

@@ -64,8 +64,11 @@ export default function ExercisesPage() {
     if (currentStep < currentExercise.steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Complete the exercise
-      completeExercise(currentExercise);
+      // Complete the exercise - make sure category is included
+      completeExercise({
+        ...currentExercise,
+        completedAt: new Date().toISOString()
+      });
       
       // Reset the exercise state
       setIsExercising(false);
