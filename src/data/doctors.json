@@ -1,0 +1,37 @@
+{
+  "doctors": [
+    {
+      "id": 1,
+      "name": "Dr. Sarah Johnson",
+      "specialty": "Physiotherapist",
+      "available": ["10:00", "11:00", "14:00", "15:00"],
+      "profile": {
+        "education": "PhD in Physical Therapy, University of Michigan",
+        "experience": "10+ years of experience in sports injuries and rehabilitation",
+        "rating": 4.8
+      }
+    },
+    {
+      "id": 2,
+      "name": "Dr. Michael Chen",
+      "specialty": "Orthopedic Specialist",
+      "available": ["09:00", "13:00", "16:00", "17:00"],
+      "profile": {
+        "education": "MD from Stanford Medical School, Orthopedic Residency at Johns Hopkins",
+        "experience": "15+ years specializing in spinal health and posture correction",
+        "rating": 4.9
+      }
+    },
+    {
+      "id": 3,
+      "name": "Dr. Emily Davis",
+      "specialty": "Physical Therapist",
+      "available": ["09:30", "12:30", "14:30", "16:30"],
+      "profile": {
+        "education": "Doctor of Physical Therapy, NYU",
+        "experience": "8 years of experience in ergonomics and workplace wellness",
+        "rating": 4.7
+      }
+    }
+  ]
+}

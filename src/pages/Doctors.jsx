@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { Input } from "../components/ui/input"
@@ -11,27 +11,8 @@ import { useAppointments } from "../context/appointment-context"
 import { format } from "date-fns"
 import { Link } from "react-router-dom"
 
-// Define doctors with name info that will be used by ImagePlaceholder
-const doctors = [
-  {
-    id: 1,
-    name: "Dr. Sarah Johnson",
-    specialty: "Physiotherapist",
-    available: ["10:00", "11:00", "14:00", "15:00"]
-  },
-  {
-    id: 2,
-    name: "Dr. Michael Chen",
-    specialty: "Orthopedic Specialist",
-    available: ["09:00", "13:00", "16:00", "17:00"]
-  },
-  {
-    id: 3,
-    name: "Dr. Emily Davis",
-    specialty: "Physical Therapist",
-    available: ["09:30", "12:30", "14:30", "16:30"]
-  }
-];
+// Import doctors data from JSON file
+import doctorsData from "../data/doctors.json"
 
 export default function DoctorsPage() {
   const [selectedDoctor, setSelectedDoctor] = useState(null)
@@ -42,6 +23,14 @@ export default function DoctorsPage() {
   const [showVideoCall, setShowVideoCall] = useState(false)
   const [currentCall, setCurrentCall] = useState(null)
   const { appointments, bookAppointment, removeAppointment } = useAppointments()
+  
+  // Load doctors from JSON file
+  const [doctors, setDoctors] = useState([])
+  
+  // Load doctors from JSON when component mounts
+  useEffect(() => {
+    setDoctors(doctorsData.doctors)
+  }, [])
 
   // Check if appointment is happening now (for demo purposes, consider any appointment from today as "now")
   const isAppointmentNow = (appointment) => {

@@ -2,11 +2,12 @@ import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Card } from "../components/ui/card"
 import { Progress } from "../components/ui/progress"
-import { Bell, Calendar, Info, Play, User, X } from "lucide-react"
+import { Bell, Calendar, Info, MapPin, Play, User, X } from "lucide-react"
 import BottomNavigation from "../components/bottom-navigation"
 import { useExercise } from "../context/exercise-context"
 import ImagePlaceholder from "../components/image-placeholder"
 import { useState } from "react"
+import NearbyHealthLocations from "../components/nearby-health-locations"
 
 // Import exercise images
 import neckStretchImg from "../assets/exercises/neck-stretch.jpg"
@@ -165,6 +166,17 @@ export default function HomePage() {
               </Card>
             ))}
           </div>
+        </section>
+
+        {/* New section for Nearby Health Locations */}
+        <section className="space-y-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-medium text-gray-900">Nearby Health Locations</h2>
+            <Button variant="ghost" size="sm" className="h-8 text-blue-600">
+              <MapPin className="h-4 w-4 mr-1" /> View All
+            </Button>
+          </div>
+          <NearbyHealthLocations />
         </section>
       </main>
 
