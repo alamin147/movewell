@@ -30,8 +30,17 @@ export function UserProvider({ children }) {
     return true
   }
   
+  const updateUser = (updatedUserData) => {
+    // In a real app, you'd make an API call to update the user
+    setUser({
+      ...user,
+      ...updatedUserData
+    })
+    return true
+  }
+  
   return (
-    <UserContext.Provider value={{ user, login, logout, signup }}>
+    <UserContext.Provider value={{ user, login, logout, signup, updateUser }}>
       {children}
     </UserContext.Provider>
   )

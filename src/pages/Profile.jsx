@@ -6,17 +6,27 @@ import { Bell, ChevronRight, CreditCard, HelpCircle, LogOut, Settings, Shield, U
 import BottomNavigation from "../components/bottom-navigation"
 import { useUser } from "../context/user-context"
 import ImagePlaceholder from "../components/image-placeholder"
+import EditProfile from "../components/edit-profile"
+import { useState } from "react"
 
 // Import user avatar
 import userAvatar from "../assets/profiles/user-avatar.jpg"
 
 export default function ProfilePage() {
-  const { user, logout } = useUser()
+  const { user, logout, updateUser } = useUser()
   const navigate = useNavigate()
+  const [showEditProfile, setShowEditProfile] = useState(false)
   
   const handleLogout = () => {
     logout()
     navigate("/")
+  }
+
+  const handleSaveProfile = (updatedUser) => {
+    const success = updateUser(updatedUser)
+    if (success) {
+      setShowEditProfile(false)
+    }
   }
 
   return (
@@ -30,25 +40,37 @@ export default function ProfilePage() {
 
       <main className="flex-1 p-4 space-y-6 pb-20">
         <Card className="p-4">
-          <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 bg-gray-200 rounded-full overflow-hidden">
-              <ImagePlaceholder 
-                width={64} 
-                height={64} 
-                text="Profile" 
-                imageSrc={userAvatar}
-              />
+          {showEditProfile ? (
+            <EditProfile 
+              user={user}
+              onSave={handleSaveProfile}
+              onCancel={() => setShowEditProfile(false)}
+            />
+          ) : (
+            <div className="flex items-center space-x-4">
+              <div className="w-16 h-16 bg-gray-200 rounded-full overflow-hidden">
+                <ImagePlaceholder 
+                  width={64} 
+                  height={64} 
+                  text="Profile" 
+                  imageSrc={userAvatar}
+                />
+              </div>
+              <div>
+                <h2 className="font-bold text-lg">{user?.name || "User"}</h2>
+                <p className="text-gray-500">{user?.email || "user@example.com"}</p>
+              </div>
+              <div className="ml-auto">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowEditProfile(true)}
+                >
+                  <User className="h-4 w-4 mr-1" /> Edit
+                </Button>
+              </div>
             </div>
-            <div>
-              <h2 className="font-bold text-lg">{user?.name || "User"}</h2>
-              <p className="text-gray-500">{user?.email || "user@example.com"}</p>
-            </div>
-            <div className="ml-auto">
-              <Button variant="outline" size="sm">
-                <User className="h-4 w-4 mr-1" /> Edit
-              </Button>
-            </div>
-          </div>
+          )}
         </Card>
 
         <section className="space-y-2">
