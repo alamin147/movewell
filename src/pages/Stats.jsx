@@ -7,13 +7,20 @@ import { useExercise } from "../context/exercise-context"
 import ImagePlaceholder from "../components/image-placeholder"
 import { useState } from "react"
 import { format, isToday } from "date-fns"
-import TodayExerciseChart from "../components/today-exercise-chart" // Import the new component
+import TodayExerciseChart from "../components/today-exercise-chart"
 
-// Import achievement icons - these should already exist
+// Import achievement icons
 import streakIcon from "../assets/icons/streak.svg"
 import postureIcon from "../assets/icons/posture.svg"
 import exerciseIcon from "../assets/icons/exercise.svg"
 import earlyAdopterIcon from "../assets/icons/early-adopter.svg"
+
+// Import user profile images for leaderboard
+import userAvatar from "../assets/profiles/user-avatar.jpg" // Your own profile pic
+import sarahAvatar from "../assets/profiles/avatars/sarah.jpg" // Download this
+import mikeAvatar from "../assets/profiles/avatars/mike.jpg"   // Download this
+import alexAvatar from "../assets/profiles/avatars/alex.jpg"   // Download this
+import jamieAvatar from "../assets/profiles/avatars/jamie.jpg" // Download this
 
 export default function StatsPage() {
   const { currentStreak, postureScore, completedExercises, weeklyActivity } = useExercise()
@@ -24,13 +31,13 @@ export default function StatsPage() {
     isToday(new Date(exercise.completedAt))
   );
   
-  // Generate dummy users with ImagePlaceholder rather than importing photos
+  // Generate users with real avatar images
   const leaderboardUsers = [
-    { name: "Sarah K.", score: 95, days: 7 },
-    { name: "Mike T.", score: 82, days: 5 },
-    { name: "You", score: postureScore, days: currentStreak },
-    { name: "Alex W.", score: 65, days: 3 },
-    { name: "Jamie L.", score: 60, days: 2 },
+    { name: "Sarah K.", score: 95, days: 7, avatar: sarahAvatar },
+    { name: "Mike T.", score: 82, days: 5, avatar: mikeAvatar },
+    { name: "You", score: postureScore, days: currentStreak, avatar: userAvatar },
+    { name: "Alex W.", score: 65, days: 3, avatar: alexAvatar },
+    { name: "Jamie L.", score: 60, days: 2, avatar: jamieAvatar },
   ].sort((a, b) => b.score - a.score)
     .map((user, index) => ({
       ...user,
@@ -244,11 +251,11 @@ export default function StatsPage() {
                     <div className="w-8 h-8 flex items-center justify-center font-bold text-gray-500">
                       {user.rank}
                     </div>
-                    <div className="w-8 h-8 bg-gray-200 rounded-full ml-2 overflow-hidden">
-                      <ImagePlaceholder 
-                        width={32} 
-                        height={32} 
-                        text={user.name}
+                    <div className="w-8 h-8 rounded-full ml-2 overflow-hidden">
+                      <img 
+                        src={user.avatar} 
+                        alt={user.name} 
+                        className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="ml-3 flex-1">
